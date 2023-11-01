@@ -15,11 +15,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
         // connect controller and service
         @Autowired
         PlantService plantService;
-
         // manages path books
         // gets the request, and then hte method starts
         // creates a Model container and uses @Autowired to connect with service
         // gets all books and then sends to html th
+
         @RequestMapping("/plants")
         public String AllPlants (Model plantsContainer){
 
