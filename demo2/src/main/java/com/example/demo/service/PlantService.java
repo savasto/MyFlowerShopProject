@@ -13,17 +13,17 @@ import java.util.UUID;
 
 
         static{
-           // String uniqueID = UUID.randomUUID().toString();
-            plants.add(new Plant("rose","red","Holland"));
-            plants.add(new Plant( "lily","rose","Holland"));
-            plants.add(new Plant( "iris","violet","Holland"));
-            plants.add(new Plant( "sunflower","yellow","Holland"));
-            plants.add(new Plant( "rose","white","Holland"));
-            plants.add(new Plant( "violet","violet","Germany"));
-            plants.add(new Plant( "jasmine","white","Holland"));
-            plants.add(new Plant( "lotus","rose","Holland"));
-            plants.add(new Plant( "tulip","black","Germany"));
-            plants.add(new Plant( "tulip","red","Holland"));
+           String uniqueID = UUID.randomUUID().toString();
+            plants.add(new Plant(uniqueID, "rose","red","Holland"));
+            plants.add(new Plant( uniqueID,"lily","rose","Holland"));
+            plants.add(new Plant(uniqueID, "iris","violet","Holland"));
+            plants.add(new Plant( uniqueID,"sunflower","yellow","Holland"));
+            plants.add(new Plant(uniqueID, "rose","white","Holland"));
+            plants.add(new Plant(uniqueID, "violet","violet","Germany"));
+            plants.add(new Plant(uniqueID, "jasmine","white","Holland"));
+            plants.add(new Plant(uniqueID, "lotus","rose","Holland"));
+            plants.add(new Plant(uniqueID, "tulip","black","Germany"));
+            plants.add(new Plant(uniqueID, "tulip","red","Holland"));
 
         }
 

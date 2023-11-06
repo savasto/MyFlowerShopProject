@@ -11,7 +11,7 @@ public class Plant {
     private Bouquet bouquet;
 
 
-    public Plant(String plantName, String plantColor, String plantOrigin){
+    public Plant(String id, String plantName, String plantColor, String plantOrigin){
         this.id = UUID.randomUUID().toString();
         this.plantName=plantName;
         this.plantColor=plantColor;
