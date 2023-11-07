@@ -1,4 +1,4 @@
-package com.example.demo.restController;
+/*package com.example.demo.restController;
 
 import com.example.demo.model.Bouquet;
 import com.example.demo.model.Plant;
@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 public class BouquetRestController {
 
-   /* @RestController
+   *//* @RestController
     @RequestMapping("api/v1/plants/bouquet")
     public class BouquetRestController {
 
@@ -49,6 +49,6 @@ public class BouquetRestController {
         @PostMapping("/updatePlantById/{id}"){
             public Plant updatePlantById
 
-        }*/
+        }*//*
 
-    }
+    }*/

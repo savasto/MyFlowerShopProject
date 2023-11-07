@@ -1,70 +1,63 @@
 package com.example.demo.service;
 
 import com.example.demo.model.Plant;
+import com.example.demo.repository.PlantRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.UUID;
 
 
 @Service
     public class PlantService {
-        static ArrayList<Plant> plants = new ArrayList<>();
+    @Autowired
+    PlantRepository plantRepository;
+
+    public Iterable<Plant> getAllPlants(){
+        return plantRepository.findAll();
+    }
 
 
-        static{
-            String uniqueID = UUID.randomUUID().toString();
-            plants.add(new Plant( uniqueID, "rose","red","Holland"));
-            plants.add(new Plant( uniqueID,"lily","rose","Holland"));
-            plants.add(new Plant( uniqueID, "iris","violet","Holland"));
-            plants.add(new Plant( uniqueID,"sunflower","yellow","Holland"));
-            plants.add(new Plant( uniqueID,"rose","white","Holland"));
-            plants.add(new Plant( uniqueID,"violet","violet","Germany"));
-            plants.add(new Plant( uniqueID, "jasmine","white","Holland"));
-            plants.add(new Plant( uniqueID,"lotus","rose","Holland"));
-            plants.add(new Plant( uniqueID,"tulip","black","Germany"));
-            plants.add(new Plant( uniqueID,"tulip","red","Holland"));
+    public Optional<Plant> findPlantById(String id) {
+           Optional<Plant> plantFound=plantRepository.findById(id);
+           return plantFound;}
 
-        }
-
-        public ArrayList<Plant> getAllPlants() {
-            return plants;
-        }
-
-        public Plant findPlantById(String id) {
-            Plant plantFound = null;
-
-            for (Plant plant : plants) {
-                boolean checkPlant = plant.getId().equals(id);
-                if (checkPlant) {
-                    plantFound = plant;
-                    break;
-                }
-            }
-            return plantFound;
-        }
-
-        public void deleteAllPlants() {
-            plants.clear();
-        }
+public long quantityPlants(){
+        return plantRepository.count();
+}
+public boolean deleteAllPlants(){
+        plantRepository.deleteAll();
+        long quantity=quantityPlants();
+        boolean deletedPlants=true;
+        if(quantity>0) deletedPlants=false;
+        //else null;
+    return deletedPlants;
+}
 
     public Plant deleteById(String id) {
 
-        Plant plant = findPlantById(id);
+        Optional<Plant> plantFound= findPlantById(id);
         boolean plantRemoved = false;
 
-        if (plant != null) {
-
-            plantRemoved = plants.remove(plant);
-            return plant;
-
+        if (plantFound.isPresent()) {
+plantRepository.deleteById(id);
+           plantRemoved=true;
+           return plantFound.get();
         } else return null;
     }
     public Plant createPlant(Plant plant) {
-
-        boolean plantAdded = plants.add(plant);
-
-        if (plantAdded) return plant; else return null;
+Plant plantSaved= plantRepository.save(plant);
+       return plantSaved;
     }
+    public Plant updatePlant(String id, Plant plant){
+        Optional<Plant> plantFound=findPlantById(id);
+        if(plantFound.isPresent()){
+            Plant plantSaved=plantRepository.save(plant);
+            return plantSaved;}
+        else return null;
+        }
     }
+
 

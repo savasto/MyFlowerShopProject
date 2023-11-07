@@ -15,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("api/v1/plants")
@@ -31,7 +32,7 @@ public class PlantRestController {
     public ResponseEntity<Iterable<Plant>> getAllPlants(HttpServletRequest request) {
 
         // query to service to get all books
-        ArrayList<Plant> plantsFromService = plantService.getAllPlants();
+        Iterable<Plant> plantsFromService=plantService.getAllPlants();
         // call Utilities to create a log
         ActivityLog activityLog = Utilities.createLog(request, "getAllPlants",
                 "plants", "processing", "/api/v1/plants/getAllPlants", "GET");
@@ -52,23 +53,61 @@ public class PlantRestController {
         }}
 
     @GetMapping("/getPlantById/{id}")
-    public Plant getPlantById(@PathVariable String id){
-        Plant plant=null;
-        plant=plantService.findPlantById(id);
-        return plant;
+    public ResponseEntity<Plant> getPlantById(HttpServletRequest request, @PathVariable  String  id){
+        // call to service for find by id
+        Optional<Plant> plant = plantService.findPlantById(id);
+
+        ActivityLog activityLog = Utilities.createLog(request,"getPlantById",
+                "plants", "processing", "api/v1/plants/getPlantById", "GET");
+
+        HttpHeaders headers = Utilities.createHeader(activityLog);
+
+        if (plant != null) {
+            activityLog.setStatus("success");
+            activityLogService.addActivityLog(activityLog);
+            headers.add("status", "success");
+            return ResponseEntity.accepted().headers(headers).body(plant.get());
+        } else {
+            activityLog.setStatus("fail");
+            activityLogService.addActivityLog(activityLog);
+            headers.add("status", "fail");
+            return ResponseEntity.internalServerError().headers(headers).body(null);
+        }
     }
+
     @DeleteMapping("/deleteAllPlants")
-    public void deleteAllPlants()
-    {
-        plantService.deleteAllPlants();
+    public ResponseEntity deleteAllPlants (HttpServletRequest request){
+        // query to delete all books
+        long quantity = plantService.quantityPlants();
+        boolean deleted = plantService.deleteAllPlants();
+
+
+        ActivityLog activityLog = Utilities.createLog(request,"deleteAllPlants",
+                "plants", "processing", "api/v1/plants/deleteAllPlants", "DELETE");
+
+        HttpHeaders headers = Utilities.createHeader(activityLog);
+
+        if (deleted) {
+            activityLog.setStatus("success");
+            activityLogService.addActivityLog(activityLog);
+            headers.add("status", "success");
+            headers.add("qtyObjectsDeleted", String.valueOf(quantity));
+            return ResponseEntity.accepted().headers(headers).body(null);
+        } else {
+            activityLog.setStatus("fail");
+            activityLogService.addActivityLog(activityLog);
+            headers.add("status", "fail");
+            return ResponseEntity.internalServerError().headers(headers).body(null);
+        }
     }
+
 
     @DeleteMapping("/deletePlantById/{id}")
         public ResponseEntity<Plant> deletePlantById (HttpServletRequest request, @PathVariable String id){
 
             Plant plant = plantService.deleteById(id);
             ActivityLog activityLog = Utilities.createLog(request,"deletePlantById",
-                    "plants", "processing", "api/v1/plants/deleteBookById", "DELETE");
+                    "plants", "processing", "api/v1/plants/deletePlantById", "DELETE");
 
             HttpHeaders headers = Utilities.createHeader(activityLog);
 
@@ -81,7 +120,7 @@ public class PlantRestController {
                 activityLog.setStatus("fail");
                 activityLogService.addActivityLog(activityLog);
                 headers.add("status", "fail");
-                return ResponseEntity.internalServerError().headers(headers).body(plant);
+                return ResponseEntity.internalServerError().headers(headers).body(null);
             }
         }
 
@@ -107,7 +146,32 @@ public class PlantRestController {
             activityLog.setStatus("fail");
             activityLogService.addActivityLog(activityLog);
             headers.add("status", "fail");
-            return ResponseEntity.internalServerError().headers(headers).body(plant);
+            return ResponseEntity.internalServerError().headers(headers).body(null);
         }
-    }}
+    }
+//CRUD update
+    @PutMapping("/updatePlant/{id}")
+    public ResponseEntity<Plant> updatePlant (HttpServletRequest request, @PathVariable String id,
+                                              @RequestBody Plant plant){
+
+        Plant plantToUpdate = plantService.updatePlant(id, plant);
+
+        ActivityLog activityLog = Utilities.createLog(request,"updatePlant",
+                "plants", "processing", "api/v1/plants/updatePlant", "PUT");
+
+        HttpHeaders headers = Utilities.createHeader(activityLog);
+
+        if (plantToUpdate != null) {
+            activityLog.setStatus("success");
+            activityLogService.addActivityLog(activityLog);
+            headers.add("status", "success");
+            return ResponseEntity.accepted().headers(headers).body(plantToUpdate);
+        } else {
+            activityLog.setStatus("fail");
+            activityLogService.addActivityLog(activityLog);
+            headers.add("status", "fail");
+            return ResponseEntity.internalServerError().headers(headers).body(plantToUpdate);
+        }
+    }
+}
 
